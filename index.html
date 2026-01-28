@@ -22,7 +22,6 @@
         .float-animation {
             animation: float 4s ease-in-out infinite;
         }
-        /* 로딩 애니메이션 */
         .loading-container {
             display: flex;
             flex-direction: column;
@@ -33,23 +32,23 @@
         }
     </style>
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@19.0.0",
-        "react/": "https://esm.sh/react@19.0.0/",
-        "react-dom": "https://esm.sh/react-dom@19.0.0",
-        "react-dom/": "https://esm.sh/react-dom@19.0.0/",
-        "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-        "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime"
-      }
-    }
-    </script>
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client?deps=react@19.0.0",
+    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
 </head>
 <body class="bg-slate-50 text-slate-900 overflow-x-hidden">
     <div id="root">
         <div class="loading-container">
             <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p class="mt-4 text-indigo-600 font-medium animate-pulse">서비스를 준비 중입니다...</p>
+            <p class="mt-4 text-indigo-600 font-medium animate-pulse">페이지를 불러오는 중...</p>
         </div>
     </div>
 </body>

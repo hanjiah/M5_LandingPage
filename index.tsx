@@ -1,41 +1,31 @@
 
-import React, { StrictMode } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 
-console.log("Initializing SparkDiscount Application...");
+console.log("SparkDiscount: Initializing application...");
 
-const renderApp = () => {
-  const rootElement = document.getElementById('root');
-  
-  if (!rootElement) {
-    console.error("Critical Error: Root element '#root' not found in DOM.");
-    return;
-  }
+const rootElement = document.getElementById('root');
 
+if (!rootElement) {
+  console.error("SparkDiscount: Root element not found.");
+} else {
   try {
     const root = createRoot(rootElement);
     root.render(
-      <StrictMode>
+      <React.StrictMode>
         <App />
-      </StrictMode>
+      </React.StrictMode>
     );
-    console.log("Application successfully mounted.");
-  } catch (error) {
-    console.error("Failed to render the application:", error);
+    console.log("SparkDiscount: Render complete.");
+  } catch (err) {
+    console.error("SparkDiscount: Render failed", err);
     rootElement.innerHTML = `
-      <div style="padding: 20px; text-align: center; color: #ef4444;">
-        <h2>애플리케이션 로드 오류</h2>
-        <p>페이지를 새로고침 해주세요. 문제가 지속되면 관리자에게 문의 바랍니다.</p>
-        <pre style="font-size: 12px; margin-top: 10px; opacity: 0.7;">${error instanceof Error ? error.message : 'Unknown error'}</pre>
+      <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; font-family:sans-serif;">
+        <h1 style="color:#ef4444;">앱 실행 오류</h1>
+        <p>새로고침을 시도해 주세요.</p>
+        <code style="background:#f1f5f9; padding:10px; border-radius:8px; margin-top:20px;">${err}</code>
       </div>
     `;
   }
-};
-
-// DOM이 완전히 준비된 후 실행
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderApp);
-} else {
-  renderApp();
 }
