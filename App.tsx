@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import EventSection from './components/EventSection';
-import Features from './components/Features';
-import Testimonials from './components/Testimonials';
-import Footer from './components/Footer';
-import ApplicationModal from './components/ApplicationModal';
-import SuccessToast from './components/SuccessToast';
+import React, { useState } from 'react';
+import Header from './components/Header.tsx';
+import Hero from './components/Hero.tsx';
+import EventSection from './components/EventSection.tsx';
+import Features from './components/Features.tsx';
+import Testimonials from './components/Testimonials.tsx';
+import Footer from './components/Footer.tsx';
+import ApplicationModal from './components/ApplicationModal.tsx';
+import SuccessToast from './components/SuccessToast.tsx';
 
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

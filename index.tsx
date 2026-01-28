@@ -1,7 +1,7 @@
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
 
 console.log("SparkDiscount App is initializing...");
 
@@ -9,11 +9,11 @@ const rootElement = document.getElementById('root');
 if (!rootElement) {
   console.error("Failed to find the root element");
 } else {
-  const root = ReactDOM.createRoot(rootElement);
+  const root = createRoot(rootElement);
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <App />
-    </React.StrictMode>
+    </StrictMode>
   );
   console.log("SparkDiscount App rendered successfully.");
 }
