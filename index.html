@@ -7,58 +7,349 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-FGJ7WRSBEC');
     </script>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SparkDiscount | 특별 할인 이벤트</title>
+    <title>SparkDiscount | Premium Limited Offer</title>
+    
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Pretendard', sans-serif;
-            scroll-behavior: smooth;
+        :root {
+            --brand-primary: #4F46E5;
+            --brand-dark: #1E1B4B;
         }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #ffffff;
+            color: var(--brand-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+        .text-balance { text-wrap: balance; }
+        
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
-        .float-animation {
-            animation: float 4s ease-in-out infinite;
+        .animate-float { animation: float 3s ease-in-out infinite; }
+
+        @keyframes subtle-zoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
         }
-        .loading-container {
+        .hover-zoom:hover { animation: subtle-zoom 0.4s ease-out forwards; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: white;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background-color: #f8fafc;
+            z-index: 9999;
         }
     </style>
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client?deps=react@19.0.0",
-    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+<body>
     <div id="root">
-        <div class="loading-container">
-            <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p class="mt-4 text-indigo-600 font-medium animate-pulse">페이지를 불러오는 중...</p>
+        <div class="loading-screen">
+            <div class="flex flex-col items-center">
+                <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                <p class="mt-4 text-indigo-600 font-bold tracking-tight">SparkDiscount</p>
+            </div>
         </div>
     </div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // --- Components ---
+
+        const Navbar = ({ onOpenForm }) => {
+            const [scrolled, setScrolled] = useState(false);
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <nav className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${scrolled ? 'bg-white/80 backdrop-blur-xl border-b border-slate-100 py-3' : 'bg-transparent py-6'}`}>
+                    <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 cta-gradient rounded-lg flex items-center justify-center text-white font-black">S</div>
+                            <span className="font-black text-xl tracking-tighter">SparkDiscount</span>
+                        </div>
+                        <div className="flex items-center gap-6">
+                            <span className="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                Live Offers Active
+                            </span>
+                            <button 
+                                onClick={onOpenForm}
+                                className="cta-gradient text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95"
+                            >
+                                쿠폰 신청
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const ApplicationModal = ({ isOpen, onClose, onSuccess }) => {
+            const [loading, setLoading] = useState(false);
+            if (!isOpen) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setTimeout(() => {
+                    setLoading(false);
+                    onSuccess();
+                }, 1500);
+            };
+
+            return (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden relative animate-in slide-in-from-bottom-8 duration-500">
+                        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                        <div className="p-10 pt-14 text-center">
+                            <h2 className="text-3xl font-black mb-2 tracking-tight">쿠폰 받기</h2>
+                            <p className="text-slate-500 font-medium mb-8">간단한 정보 입력 후 즉시 할인 쿠폰이 발급됩니다.</p>
+                            
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <input type="text" required placeholder="이름" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" />
+                                <input type="tel" required placeholder="휴대폰 번호" className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" />
+                                <div className="flex items-start gap-3 p-2 text-left">
+                                    <input type="checkbox" required id="agree" className="mt-1 w-5 h-5 rounded-md accent-indigo-600" />
+                                    <label htmlFor="agree" className="text-xs text-slate-400 font-medium leading-relaxed">
+                                        개인정보 수집 및 이용 동의 (필수). 입력하신 정보는 쿠폰 발급 및 혜택 안내를 위해서만 사용됩니다.
+                                    </label>
+                                </div>
+                                <button 
+                                    type="submit" 
+                                    disabled={loading}
+                                    className="w-full py-5 cta-gradient text-white rounded-2xl font-black text-lg shadow-xl shadow-indigo-100 hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                                >
+                                    {loading ? '발송 중...' : '지금 5만원 할인받기'}
+                                    {!loading && <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Toast = ({ show }) => {
+            if (!show) return null;
+            return (
+                <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-bottom-4">
+                    <div className="bg-slate-900 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-2xl border border-white/10">
+                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <span className="font-bold text-sm tracking-tight">쿠폰이 문자로 발송되었습니다!</span>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main Page ---
+
+        const App = () => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [showToast, setShowToast] = useState(false);
+            const [timeLeft, setTimeLeft] = useState(1200); // 20 mins
+            const [stock, setStock] = useState(18);
+
+            useEffect(() => {
+                const timer = setInterval(() => setTimeLeft(prev => prev > 0 ? prev - 1 : 0), 1000);
+                const stockTimer = setInterval(() => setStock(prev => prev > 3 && Math.random() > 0.8 ? prev - 1 : prev), 15000);
+                return () => { clearInterval(timer); clearInterval(stockTimer); };
+            }, []);
+
+            const formatTime = (s) => `${Math.floor(s/60)}:${(s%60).toString().padStart(2, '0')}`;
+
+            const handleSuccess = () => {
+                setIsModalOpen(false);
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 4000);
+            };
+
+            return (
+                <div className="min-h-screen">
+                    <Navbar onOpenForm={() => setIsModalOpen(true)} />
+
+                    {/* Hero Section */}
+                    <section className="relative pt-40 pb-20 md:pt-60 md:pb-40 px-6 overflow-hidden">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-screen-2xl h-full -z-10">
+                            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-50/50 blur-[120px] rounded-full"></div>
+                            <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-violet-50/50 blur-[120px] rounded-full"></div>
+                        </div>
+
+                        <div className="max-w-5xl mx-auto text-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-xs font-black tracking-widest uppercase mb-10 animate-fade-in">
+                                <span className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-ping"></span>
+                                유튜브 유입 고객 한정 혜택
+                            </div>
+                            <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-[1.1] mb-10 text-balance">
+                                영상 속 그 제품, <br/>
+                                <span className="text-indigo-600">50,000원</span> 할인 쿠폰
+                            </h1>
+                            <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto mb-14 leading-relaxed">
+                                고민하는 사이 품절될 수 있습니다. <br className="md:hidden"/>
+                                지금 즉시 쿠폰을 받고 특별한 혜택을 누리세요.
+                            </p>
+                            
+                            <div className="flex flex-col items-center gap-6">
+                                <button 
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="px-12 py-6 cta-gradient text-white text-xl font-black rounded-3xl shadow-2xl shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-1 transition-all active:scale-95 flex items-center gap-3 group"
+                                >
+                                    지금 무료 쿠폰 받기
+                                    <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                </button>
+                                <p className="text-sm font-bold text-slate-400">혜택 종료까지 {formatTime(timeLeft)} 남음</p>
+                            </div>
+                        </div>
+
+                        {/* Interactive Visual Element */}
+                        <div className="mt-32 max-w-2xl mx-auto">
+                            <div className="glass-card p-10 rounded-[3rem] shadow-xl border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-8 animate-float">
+                                <div className="text-left">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 mb-1 block">Limited Stock</span>
+                                    <h3 className="text-2xl font-black mb-4">실시간 남은 수량</h3>
+                                    <div className="w-48 bg-slate-100 h-3 rounded-full overflow-hidden">
+                                        <div className="h-full bg-indigo-600 transition-all duration-1000" style={{width: `${(stock/20)*100}%`}}></div>
+                                    </div>
+                                </div>
+                                <div className="text-center md:text-right">
+                                    <div className="text-5xl font-black text-indigo-600 italic">{stock}EA</div>
+                                    <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-tighter">Only a few left today</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Features Section */}
+                    <section className="py-32 bg-slate-50">
+                        <div className="max-w-7xl mx-auto px-6">
+                            <div className="text-center mb-20">
+                                <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">왜 지금 신청해야 할까요?</h2>
+                                <p className="text-slate-500 font-medium">SparkDiscount만의 압도적인 고객 혜택</p>
+                            </div>
+                            <div className="grid md:grid-cols-3 gap-10">
+                                {[
+                                    { t: "즉시 발송", d: "신청 완료와 동시에 알림톡으로 쿠폰 번호가 즉시 전송됩니다.", icon: "⚡️" },
+                                    { t: "중복 적용", d: "현재 진행 중인 다른 프로모션과 중복으로 할인이 가능합니다.", icon: "💎" },
+                                    { t: "익일 배송", d: "쿠폰 적용 구매 시 최우선 배송 순위로 지정되어 내일 바로 받습니다.", icon: "🚀" }
+                                ].map((f, i) => (
+                                    <div key={i} className="bg-white p-10 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all border border-slate-100 group">
+                                        <div className="text-4xl mb-6 group-hover:scale-110 transition-transform inline-block">{f.icon}</div>
+                                        <h4 className="text-xl font-black mb-4">{f.t}</h4>
+                                        <p className="text-slate-500 text-sm leading-relaxed font-medium">{f.d}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Social Proof */}
+                    <section className="py-32 bg-white overflow-hidden">
+                        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-20">
+                            <div className="flex-1">
+                                <span className="text-indigo-600 font-black text-sm uppercase tracking-widest mb-4 block underline decoration-4 underline-offset-8">User Proof</span>
+                                <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-8 text-balance">
+                                    12,482명이 <br/>
+                                    이미 혜택을 받았습니다.
+                                </h2>
+                                <div className="flex flex-col gap-4">
+                                    {['매일 오전 10시 선착순 리셋', '유튜브 콜라보 기념 단독 할인', '반품/환불 시 쿠폰 재발급 가능'].map((p, i) => (
+                                        <div key={i} className="flex items-center gap-3 font-bold text-slate-600">
+                                            <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center">
+                                                <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                            {p}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex-1 w-full grid grid-cols-2 gap-4 animate-slide-up">
+                                <div className="space-y-4 pt-10">
+                                    <div className="aspect-[4/5] bg-slate-100 rounded-3xl overflow-hidden shadow-lg hover-zoom">
+                                        <div className="p-6 h-full flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent text-white">
+                                            <p className="font-bold text-sm italic">"진짜 바로 오네요!"</p>
+                                            <span className="text-[10px] opacity-70">구매자 박*지</span>
+                                        </div>
+                                    </div>
+                                    <div className="aspect-square bg-indigo-600 rounded-3xl p-8 text-white flex flex-col justify-center text-center">
+                                        <div className="text-4xl font-black mb-2">99%</div>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">Satisfaction</p>
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="aspect-square bg-slate-800 rounded-3xl p-8 text-white flex flex-col justify-center text-center">
+                                        <div className="text-3xl font-black mb-2">FREE</div>
+                                        <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">No Membership Fee</p>
+                                    </div>
+                                    <div className="aspect-[4/5] bg-slate-200 rounded-3xl overflow-hidden shadow-lg hover-zoom">
+                                        <div className="p-6 h-full flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent text-white">
+                                            <p className="font-bold text-sm italic">"대박 할인 받았어요"</p>
+                                            <span className="text-[10px] opacity-70">구매자 이*훈</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-24 bg-slate-900 text-slate-500 text-center px-6">
+                        <div className="flex items-center justify-center gap-2 mb-8 grayscale opacity-50">
+                            <div className="w-6 h-6 cta-gradient rounded flex items-center justify-center text-white font-black text-xs">S</div>
+                            <span className="font-black text-lg tracking-tighter text-white">SparkDiscount</span>
+                        </div>
+                        <p className="text-sm font-medium mb-4">본 프로모션은 유튜브 유입 고객을 대상으로 한정 기간 진행됩니다.</p>
+                        <p className="text-[10px] uppercase tracking-widest opacity-50">© 2025 SPARKDISCOUNT CORP. ALL RIGHTS RESERVED.</p>
+                    </footer>
+
+                    {/* Modals & Toasts */}
+                    <ApplicationModal 
+                        isOpen={isModalOpen} 
+                        onClose={() => setIsModalOpen(false)} 
+                        onSuccess={handleSuccess} 
+                    />
+                    <Toast show={showToast} />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
