@@ -31,6 +31,8 @@ const AIChatBot: React.FC = () => {
         model: 'gemini-3-flash-preview',
         contents: userMessage,
         config: {
+          // Latency 최적화: 추론 예산을 0으로 설정하여 지연 시간 최소화
+          thinkingConfig: { thinkingBudget: 0 },
           systemInstruction: `당신은 SparkDiscount의 친절한 이벤트 상담원입니다. 
           다음 정보를 바탕으로 답변하세요:
           - 이벤트명: SparkDiscount 첫 시작 응원 5만원 할인 쿠폰 이벤트
@@ -39,7 +41,7 @@ const AIChatBot: React.FC = () => {
           - 유효기간: 2025년 12월 31일까지
           - 신청 방법: 이름, 휴대폰 번호, 이메일 입력 후 신청 버튼 클릭
           - 특징: 기존 상시 할인과 중복 적용 가능, 신청 즉시 문자 발송.
-          답변은 한국어로 친절하고 짧게 하세요.`,
+          답변은 한국어로 친절하고 매우 간결하게 하세요.`,
         }
       });
 
@@ -102,7 +104,8 @@ const AIChatBot: React.FC = () => {
               />
               <button 
                 onClick={handleSend}
-                className="bg-indigo-600 text-white p-2 rounded-xl hover:bg-indigo-700 transition-colors"
+                disabled={isTyping}
+                className={`bg-indigo-600 text-white p-2 rounded-xl hover:bg-indigo-700 transition-colors ${isTyping ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
               </button>
