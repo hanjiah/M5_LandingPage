@@ -8,7 +8,6 @@ import Testimonials from './components/Testimonials.tsx';
 import Footer from './components/Footer.tsx';
 import ApplicationModal from './components/ApplicationModal.tsx';
 import SuccessToast from './components/SuccessToast.tsx';
-import AIChatBot from './components/AIChatBot.tsx';
 
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +23,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen relative">
       <Header onCtaClick={openModal} />
       <main>
         <Hero onCtaClick={openModal} />
@@ -41,9 +40,6 @@ const App: React.FC = () => {
       {showToast && (
         <SuccessToast message="쿠폰 신청이 완료되었습니다! 문자를 확인해주세요." />
       )}
-
-      {/* 실시간 AI 상담 챗봇 추가 */}
-      <AIChatBot />
     </div>
   );
 };
